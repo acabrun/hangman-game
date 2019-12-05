@@ -38,7 +38,8 @@ export default class App extends React.Component {
 
     this.state = {
       usedLetters: "",
-      guessingWord: ""
+      guessingWord: "",
+      wordMasked: null
     };
   }
 
@@ -55,27 +56,45 @@ export default class App extends React.Component {
     this.setState({guessingWord: newWord})
   }
 
+  addMask(guessingWord) {  //----------------WORK IN PROGRESS HERE----------
+    var wordMasked = []
+    for (var i = 0; i<guessingWord.length; i++) {
+      guessingWord[i].replace(/.*/,'_')
+      console.log('wordMasked')
+    }
+    this.setState({wordMasked:wordMasked})
+    return wordMasked
+  }
+
   render() {
     return (
       <div className="App">
         {console.log(
-          `Mot à deviner : ${this.state.guessingWord}, Lettres comparées : ${this.state.usedLetters}`
+          `Mot à deviner : ${this.state.guessingWord}, Lettres comparées : ${this.state.usedLetters}, Masque: ${this.state.wordMasked}`
         )}
-        <header className="App-header">{this.state.guessingWord}</header>
+        <header className="App-header">{this.state.wordMasked}</header>
         <body>
           <div className="alphabet">
             {letters.map((letter) => (
               <button
                 className="alphabet-button"
                 key={letter}
-                onClick={() => this.computeDisplay(this.state.guessingWord, letter)}
+                onClick={() => {
+                  this.computeDisplay(this.state.guessingWord, letter)
+                  this.setState({usedLetters: letter})
+                }
+              }
               >
                 {letter}
               </button>
             ))}
           </div>
           <div>
-            <button className="newgame-button" onClick={() => {this.getRandomPhrase()}} >New Game</button>
+            <button className="newgame-button" onClick={() => {
+              this.getRandomPhrase()
+              this.addMask(this.state.guessingWord)
+              }
+            } >New Game</button>
           </div>
         </body>
       </div>
